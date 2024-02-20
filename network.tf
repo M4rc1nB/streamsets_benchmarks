@@ -4,7 +4,7 @@ data "google_compute_subnetwork" "subnet" {
 }
 
 resource "google_compute_firewall" "internal-communication" {
-  name    = "internal-communication"
+  name    = "${var.your_initials}-internal-communication"
   network = "se-bench"
 
   allow {
