@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Python: File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "justMyCode": true,
+            "args": [
+                "start",
+                "--cred_id","452b860d-21b4-4f3c-9aa8-75d935dbc807",
+                "--token","eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJzIjoiY2Q2YTdkYzBkYTU3Njc1ZGJjZDFhMmYxMWQ2OThkYmJhYmQ0ODI3M2VjMDAxM2UzNDBkOTRjMzQ0OGMwNmJiZDc0ODI2OGZlZmFkN2RhYjdhNjllZDU0OTFlMzlmYTRlMTdhZWMzNmU1YjgyZGRlOGVmZGQ1ZTc0ODBhMTk1ZWIiLCJ2IjoxLCJpc3MiOiJldTAxIiwianRpIjoiNDUyYjg2MGQtMjFiNC00ZjNjLTlhYTgtNzVkOTM1ZGJjODA3IiwibyI6ImJhNzUwYTcxLWEwYzQtMTFlZC1iNjYxLWMzYzQ3N2M4OTg1OSJ9.",
+                "--sch_connection_name","mb_test_conn",
+                "--database_user","SA",
+                "--database_pass","EarN8YQirCL@Q_jxMH1a",
+                "--connection_string","jdbc:sqlserver://;serverName=mb-sx-db-benchmarks;encrypt=true;trustServerCertificate=true;databaseName=AdventureWorksDW2022",
+                "--hostname", "http://mb-sdc-01:18630"
+            ]
+        }
+    ]
+}
