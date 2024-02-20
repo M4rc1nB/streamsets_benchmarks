@@ -8,7 +8,7 @@ default  = "marcin@streamsets-se-9e4b.iam.gserviceaccount.com"
 }
 
 variable "your_initials" {
-default = "mb" 
+default = "your_username_is_auto_detected" 
 }
 
 #GCP Compute Settings

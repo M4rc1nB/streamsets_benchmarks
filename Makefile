@@ -2,13 +2,9 @@
 SHELL := /bin/bash
 
 ENV ?= prod
-
 REPO := $(shell git remote get-url origin | sed -e 's/^.*\///' -e 's/.git//')
-
 USER_ID ?= $(shell stat -c "%u:%g" .)
-
 USERNAME ?= $(shell whoami)
-
 DEFAULT_REGION ?= europe-west1
 
 ## Applications
@@ -16,17 +12,16 @@ TERRAFORM := terraform
 TERRAFORM := DEFAULT_REGION=${DEFAULT_REGION} \
 		TF_VAR_repo=${REPO} \
 		TF_VAR_env=${ENV} \
-		TF_VAR_username=${USERNAME}
+		TF_VAR_your_initials=${USERNAME} \
 		${TERRAFORM}
 
-
-# Dependencies
+# Dependencies
 depend:
 	${TERRAFORM} get
 	${TERRAFORM} init \
-		-backend-config key="${USERNAME}-${REPO}.tfstate" \
-		-backend-config bucket="sx-benchmarks"
+		-backend-config="bucket=sx-benchmarks" \
 		-backend-config="prefix=terraform/${USERNAME}-state"
+
 
 # Running
 plan:
@@ -62,7 +57,7 @@ test:
 # Cleaning
 clean:
 	rm -rf .terraform
-	rm -f terraform.tfstate terraform.tfstate.backup
+	rm -f terraform.tfstate terraform.tfstate.backup .terraform.lock.hcl
 	rm -f *.lock.hcl
 
 clean-all: clean

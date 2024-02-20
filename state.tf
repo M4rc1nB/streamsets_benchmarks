@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
     bucket  = "sx-benchmarks"
-    prefix  = "terraform/mb-state"
+    prefix  = "terraform/mb1-state"
   }
 }
