@@ -10,6 +10,7 @@ sudo apt install -y docker.io
 sudo usermod -a -G docker ubuntu
 sudo apt install docker-compose -y
 sudo apt install python3-pip -y
+sudo apt install mysql-client -y
 pip3 install streamsets
 pip3 install --upgrade requests
 
