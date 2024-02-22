@@ -12,7 +12,7 @@ def connect_to_control_hub(cred_id, token):
 
 import time
 
-def select_engine(control_hub, hostname, threshold_time_sec=100, max_attempts=10, sleep_time=60):
+def select_engine(control_hub, hostname, threshold_time_sec=120, max_attempts=10, sleep_time=60):
     for attempt in range(max_attempts):
         engines = control_hub.engines.get_all()
         logger.info("List of Engines with Last Reported Time:")
@@ -71,7 +71,11 @@ def update_connection(control_hub, sch_connection_name, database_user, database_
         
 def delete_connection(control_hub, connection):
     control_hub.delete_connection(connection)
-    logger.info("Deleted connection with ID: %s", connection)        
+    logger.info("Deleted connection with ID: %s", connection)  
+    
+def delete_pipeline(control_hub, pipeline):
+    control_hub.delete_pipeline(pipeline)
+    logger.info("Deleted pipeline with ID: %s", pipeline)           
 
 def start_logic(sch_connection_name, control_hub, database_user, database_pass, connection_string, hostname):
     existing_connections = [conn for conn in control_hub.connections if conn.name == sch_connection_name]
@@ -81,6 +85,7 @@ def start_logic(sch_connection_name, control_hub, database_user, database_pass, 
     else:
         selected_engine = select_engine(control_hub, hostname)
         create_connection(control_hub, sch_connection_name, selected_engine, database_user, database_pass, connection_string)
+        create_pipeline(control_hub, sch_connection_name, selected_engine)
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Script to start or stop a connection")
@@ -94,6 +99,54 @@ def parse_arguments():
     parser.add_argument('--hostname', help='Hostname')
     return parser.parse_args()
 
+def create_pipeline(control_hub, sch_connection_name, selected_engine):
+    
+    pipeline_builder = control_hub.get_pipeline_builder(engine_type='data_collector',engine_id=selected_engine.id)
+    
+    # Create Pipeline
+    pipeline_title = sch_connection_name
+    pipeline = pipeline_builder.build(pipeline_title)
+    connection = control_hub.connections.get(name=sch_connection_name)
+    
+    # Adding JDBC Multitable Consumer stage
+    jdbc_multitable_consumer = pipeline_builder.add_stage('JDBC Multitable Consumer')
+    
+    # Adding connection
+    jdbc_multitable_consumer.connection = connection.id
+    
+    # Table and jdbc configuration
+    jdbc_multitable_consumer.set_attributes(
+    max_batch_size_in_records=1000,
+    maximum_number_of_tables=-1,
+    table_configs=[{
+        'schema': "dbo",
+        'isTablePatternListProvided': False,
+        'tablePattern': 'Dim%',
+        'tablePatternList': [],
+        'overrideDefaultOffsetColumns': False,
+        'offsetColumns': [],
+        'offsetColumnToInitialOffsetValue': [],
+        'offsetColumnToLastOffsetValue': [],
+        'enableNonIncremental': True,
+        'partitioningMode': 'DISABLED',
+        'partitionSize': '1000000',
+        'maxNumActivePartitions': -1
+    }]
+    )
+    
+    # Adding Trash stage
+    trash_stage = pipeline_builder.add_stage('Trash')
+
+    # Connecting JDBC Multitable Consumer to Trash stage
+    jdbc_multitable_consumer >> trash_stage
+    
+    # Compile pipline
+    pipeline = pipeline_builder.build(sch_connection_name)
+    
+    # Save the Pipeline
+    control_hub.publish_pipeline(pipeline, commit_message='Terraform Automation')
+    logger.info("Pipeline '%s' created successfully.", pipeline_title)
+    
 def main():
     args = parse_arguments()
 
@@ -115,8 +168,18 @@ def main():
     if action == 'start':
         start_logic(sch_connection_name, control_hub, database_user, database_pass, connection_string, hostname)
     elif action == 'stop':
+        
+        existing_pipelines = [pipe for pipe in control_hub.pipelines if pipe.name == sch_connection_name]
+        
+        if existing_pipelines:
+            for pipe in existing_pipelines:
+                delete_pipeline(control_hub, pipe)
+                break
+        else:
+            logger.info("No pipeline found with name: %s", sch_connection_name)
+        
         existing_connections = [conn for conn in control_hub.connections if conn.name == sch_connection_name]
-
+        
         if existing_connections:
             for conn in existing_connections:
                 delete_connection(control_hub, conn)

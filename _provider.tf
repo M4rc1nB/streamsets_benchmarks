@@ -10,9 +10,9 @@ terraform {
 provider "google" {
   credentials = file(var.cred_file_name)
 
-  project = "streamsets-se-9e4b"
-  region  = "europe-west1"
-  zone    = "europe-west1-c"
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
 provider "random" {}

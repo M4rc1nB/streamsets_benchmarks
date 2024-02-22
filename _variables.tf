@@ -28,6 +28,10 @@ variable "project_id" {
 default  = "streamsets-se-9e4b"
 }
 
+variable "region" {
+default  = "europe-west1" 
+}
+
 variable "zone" {
 default  = "europe-west1-c" 
 }

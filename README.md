@@ -12,6 +12,11 @@ This repository contains scripts and configuration files for benchmarking Stream
   - Service Account User
   - Storage Admin
 
+- **Streamsets Platform Deployment**
+  - Create Enviroment
+  - Create Deployment
+  - Create access token
+
 ## Setup
 
 1. **Service Account Setup**:

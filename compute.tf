@@ -53,6 +53,25 @@ resource "google_compute_instance" "sx-sdc-benchmarks" {
   machine_type = var.machine_setup["sdc"]
   zone         = var.zone
 
+  metadata_startup_script = templatefile("scripts/sdc.sh", {
+      SDC_HOSTNAME    = "${var.your_initials}-sdc-01"
+      PLATFORM_URL    = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_sch_url"]
+      DEPLOYMENT_ID   = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_id"]
+      DEPLOYMENT_TOKEN = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_token"]
+      SCH_CRED_ID     = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_sch_cred_id"]
+      SCH_TOKEN       = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_sch_token"]
+      INITIALS_PREFIX = var.your_initials
+      DATABASE_NAME   = var.sqlserver_settings["database_name"]
+      DATABASE_PASS   = jsondecode(data.google_secret_manager_secret_version.sqlserver_secret.secret_data)["password"]
+      DATABASE_USER   = jsondecode(data.google_secret_manager_secret_version.sqlserver_secret.secret_data)["username"]
+      SOURCE_USER     = var.source_user
+      SOURCE_PASS     = var.source_pass
+  })
+
+  metadata = {
+    shutdown-script = "#! /bin/bash /home/ubuntu/shutdown_cleanup_script.sh"
+  }
+
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2004-lts" # Ubuntu 20.04 LTS image
@@ -69,23 +88,9 @@ resource "google_compute_instance" "sx-sdc-benchmarks" {
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 
-  metadata_startup_script = templatefile("scripts/sdc.sh", {
-      SDC_HOSTNAME = "${var.your_initials}-sdc-01"
-      PLATFORM_URL = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_sch_url"],
-      DEPLOYMENT_ID = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_id"],
-      DEPLOYMENT_TOKEN = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_deployment_token"],
-      SCH_CRED_ID = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_sch_cred_id"],
-      SCH_TOKEN = jsondecode(data.google_secret_manager_secret_version.sx_platform_secret.secret_data)["streamsets_sch_token"],
-      INITIALS_PREFIX = var.your_initials,
-      DATABASE_NAME = var.sqlserver_settings["database_name"],
-      DATABASE_PASS = jsondecode(data.google_secret_manager_secret_version.sqlserver_secret.secret_data)["password"],
-      DATABASE_USER = jsondecode(data.google_secret_manager_secret_version.sqlserver_secret.secret_data)["username"],
-      SOURCE_USER = var.source_user,
-      SOURCE_PASS = var.source_pass
-    })
-
-    tags = ["${var.your_initials}-sx-sdc-benchmarks"]
+  tags = ["${var.your_initials}-sx-sdc-benchmarks"]
 }
+
 
 # Grant access to the existing Cloud Storage bucket
 resource "google_storage_bucket_iam_member" "storage_bucket_access" {
