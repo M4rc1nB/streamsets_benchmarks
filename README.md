@@ -46,3 +46,22 @@ This repository contains scripts and configuration files for benchmarking Stream
     make apply: Apply changes to GCP (auto approve enabled)
     make destroy: Destroy resources in GCP
     make clean: Clean up working files
+
+
+## Table: benchmark_events
+
+ - Table for tracing benchmarking events
+
+| Field Name      | Data Type                      | Description                                       |
+|-----------------|--------------------------------|---------------------------------------------------|
+| test_case_id    | INT AUTO_INCREMENT             | Primary key, auto-incrementing                    |
+| timestamp       | TIMESTAMP                      | Default: current timestamp                        |
+| event_type      | ENUM('start', 'stop', 'error') | Type of event                                     |
+| origin_type     | VARCHAR(255)                   | Type of origin                                    |
+| destination_type| VARCHAR(255)                   | Type of destination                               |
+| test_scenario   | VARCHAR(255)                   | Description of the test scenario                  |
+| duration        | DECIMAL(10, 2)                 | Duration of the event (in seconds)                |
+| errors          | TEXT                           | Details of any errors that occurred               |
+| parameters      | TEXT                           | Additional parameters relevant to the event       |
+| vm_spec         | VARCHAR(45)                    | Specifications of the virtual machine             |
+|-----------------|--------------------------------|---------------------------------------------------|
