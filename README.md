@@ -1,35 +1,51 @@
-
 # StreamSets Benchmarks
 
 This repository contains scripts and configuration files for benchmarking StreamSets Data Collector performance on Google Cloud Platform (GCP).
 
+## Features
+
+- Automated provisioning of Origins including Kafka, Postgres, SQL Server, and Oracle.
+- Automated provisioning of StreamSets Data Collector.
+- Automated provisioning of StreamSets Connections for added origins.
+- Automated creation of StreamSets Pipelines in a ready-to-execute state.
+- Infrastructure and StreamSets Platform cleanup on de-provisioning.
+
+## To-Do:
+
+- Develop StreamSets pipeline framework:
+  - Implement start and stop events logging into `benchmark_events`.
+  - Capture relevant benchmarking data.
+  - Pre-build a set of configurations for various RDBMS.
+- Reconfigure sources to make them more production-like.
+- Add logic to sdk-cli.py to create and remove; Environment, Deployment and Access Token. This will be used on pre terraform steps and implemented into Makefile 
+
 ## Requirements
 
-- **Terraform v1.7.3**: Make sure to install Terraform version 1.7.3.
-- **GCP Service Account**: Create a service account on GCP with the following grants:
+- **Terraform v1.7.3**: Ensure Terraform version 1.7.3 is installed.
+- **GCP Service Account**: Create a service account on GCP with the following permissions:
   - Compute Admin
   - Secret Manager Admin
   - Service Account User
   - Storage Admin
 
-- **Streamsets Platform Deployment**
-  - Create Enviroment
-  - Create Deployment
-  - Create access token
+- **StreamSets Platform Deployment**
+  - Create Environment
+  - Create Deployment 
+  - Generate Access Token
 
 ## Setup
 
 1. **Service Account Setup**:
    - Create a service account on GCP with the necessary permissions listed above.
    - Download the JSON key file for the service account.
-   - Place JSON key in the cloned repo folder with the default name of `streamsets-se-9e4b.json`.
+   - Place the JSON key in the cloned repo folder with the default name `streamsets-se-9e4b.json`.
 
 2. **Create Secret**:
-   - Use Google Secret Manager to create a secret called `youruser-sx-platform`.
-   - Replace `youruser` with your username, which can be obtained from the terminal with the `whoami` command.
+   - Use Google Secret Manager to create a secret named `youruser-sx-platform`.
+   - Replace `youruser` with your username, obtainable from the terminal using the `whoami` command.
 
 3. **JSON Template**:
-   - Use the following JSON template for configuring StreamSets deployment:
+   - Utilize the following JSON template for configuring StreamSets deployment:
 
 ```json
 {
@@ -64,4 +80,3 @@ This repository contains scripts and configuration files for benchmarking Stream
 | errors          | TEXT                           | Details of any errors that occurred               |
 | parameters      | TEXT                           | Additional parameters relevant to the event       |
 | vm_spec         | VARCHAR(45)                    | Specifications of the virtual machine             |
-|-----------------|--------------------------------|---------------------------------------------------|
