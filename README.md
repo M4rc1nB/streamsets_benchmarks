@@ -21,6 +21,12 @@ The overall conception is to enable the automated deployment of configurable inf
 - Reconfigure sources to make them more production-like.
 - Add logic to sdk-cli.py to create and remove; Environment, Deployment and Access Token. This will be used on pre terraform steps and implemented into Makefile 
 
+## Stretch Objective
+
+Expand on SDK-CLI functionality to enable an intuitive interface to interact with the StreamSets Platform.
+
+This stretch objective aims to enhance the repository's capabilities by extending the SDK-CLI functionality. The goal is to provide users with a more intuitive and streamlined interface for interacting with the StreamSets Platform. By leveraging the SDK-CLI, users will have access to a set of command-line tools that simplify common tasks such as pipeline creation, configuration management, and monitoring.
+
 ## Requirements
 
 - **Terraform v1.7.3**: Ensure Terraform version 1.7.3 is installed.
