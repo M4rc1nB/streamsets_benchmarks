@@ -19,7 +19,8 @@ The overall conception is to enable the automated deployment of configurable inf
   - Capture relevant benchmarking data.
   - Pre-build a set of configurations for various RDBMS.
 - Reconfigure sources to make them more production-like.
-- Add logic to sdk-cli.py to create and remove; Environment, Deployment and Access Token. This will be used on pre terraform steps and implemented into Makefile 
+- Add logic to sdk-cli.py to create and remove; Environment, Deployment and Access Token. This will be used on pre terraform steps and implemented into Makefile
+- reduce level of required GCP permissions. 
 
 ## Stretch Objective
 
