@@ -2,6 +2,8 @@
 
 This repository contains scripts and configuration files for benchmarking StreamSets Data Collector performance on Google Cloud Platform (GCP).
 
+The overall conception is to enable the automated deployment of configurable infrastructure containing pre-configured StreamSets Data Collector instances and various data sources. Subsequently, it facilitates the creation of relevant connections and pipelines within the StreamSets platform. During the benchmarking process, pipelines generate events which are stored in a MySQL database in the `benchmark_events` table for further analysis.
+
 ## Features
 
 - Automated provisioning of Origins including Kafka, Postgres, SQL Server, and Oracle.
